@@ -1,451 +1,637 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제주도 여행 대시보드 🌊</title>
-    <style>
-        :root {
-            --primary: #0077b6;
-            --primary-light: #90e0ef;
-            --accent: #f4a261;
-            --success: #2a9d8f;
-            --danger: #e63946;
-            --bg: #f8f9fa;
-            --card: #ffffff;
-            --text: #212529;
-            --text-muted: #6c757d;
-            --border: #dee2e6;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
-            background: linear-gradient(135deg, #e0f7fa 0%, #f3e5f5 100%);
-            min-height: 100vh;
-            color: var(--text);
-            padding: 20px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>제주도 가족여행 대시보드 🌊</title>
+<style>
+:root{
+  --primary:#0077b6; --primary-dark:#023e8a; --primary-light:#90e0ef;
+  --pink:#e6398f; --accent:#f4a261; --success:#2a9d8f; --danger:#e63946;
+  --bg:#f0f7fa; --card:#ffffff; --text:#1b262b; --muted:#6b7a83; --border:#dde5ea;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',Malgun Gothic,sans-serif;background:linear-gradient(160deg,#e0f4fa 0%,#fdf3f7 100%);min-height:100vh;color:var(--text);padding-bottom:60px}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
 
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, var(--primary), #023e8a);
-            color: white;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,119,182,0.3);
-        }
-        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        .header .subtitle { font-size: 1.1rem; opacity: 0.9; }
-        .header .date-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 20px;
-            border-radius: 20px;
-            margin-top: 15px;
-            font-weight: 500;
-        }
+/* ===== Sync bar ===== */
+.syncbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.sync-info{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);flex-wrap:wrap}
+.sync-info .dot{width:9px;height:9px;border-radius:50%;background:var(--success);display:inline-block}
+.sync-info .dot.dirty{background:var(--accent)}
+.sync-info .dot.off{background:var(--danger)}
+.sync-info b{color:var(--text)}
+.sync-btns{display:flex;gap:6px;flex-wrap:wrap}
+.btn{border:none;border-radius:8px;padding:8px 14px;font-size:.85rem;font-weight:700;cursor:pointer;transition:filter .15s,transform .15s;font-family:inherit}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-save{background:var(--primary);color:#fff}
+.btn-ghost{background:#eef4f8;color:var(--primary-dark)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sm{padding:4px 10px;font-size:.75rem}
 
-        /* Cards */
-        .card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-        .card h2 {
-            font-size: 1.4rem;
-            margin-bottom: 16px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid var(--primary-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card h2 .icon { font-size: 1.6rem; }
+/* ===== Header ===== */
+.header{text-align:center;padding:34px 16px 26px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 70%);color:#fff;border-radius:18px;margin:18px 0 14px;box-shadow:0 12px 30px rgba(0,119,182,.35)}
+.header h1{font-size:2rem;margin-bottom:6px}
+.header .subtitle{opacity:.92;font-size:1rem;margin-bottom:12px}
+.header .badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.header .badge{background:rgba(255,255,255,.18);padding:6px 16px;border-radius:20px;font-weight:600;font-size:.9rem}
+.header .badge.dday{background:#ffd166;color:#7a5200}
+.family-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.fchip{background:rgba(255,255,255,.92);border-radius:30px;padding:5px 14px;font-size:.85rem;font-weight:700;display:flex;gap:6px;align-items:center}
 
-        /* Grid */
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+/* ===== Tabs ===== */
+.tabs{display:flex;gap:8px;margin:14px 0;overflow-x:auto;padding-bottom:4px}
+.tab{flex:0 0 auto;border:2px solid var(--primary-light);background:#fff;color:var(--primary-dark);border-radius:30px;padding:9px 18px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit;transition:all .15s}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+section{display:none}
+section.active{display:block}
 
-        /* People Cards */
-        .person-card {
-            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 5px solid var(--primary);
-        }
-        .person-card.orange { border-left-color: var(--accent); background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
-        .person-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
-        .person-card .info { display: flex; flex-direction: column; gap: 4px; }
-        .person-card .info span { color: var(--text-muted); font-size: 0.95rem; }
+/* ===== Cards ===== */
+.card{background:var(--card);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 4px 16px rgba(20,60,90,.08)}
+.card h2{font-size:1.25rem;margin-bottom:14px;padding-bottom:10px;border-bottom:3px solid var(--primary-light);display:flex;align-items:center;gap:8px}
+.card h2 .icon{font-size:1.4rem}
+.hint{color:var(--muted);font-size:.82rem;margin-bottom:12px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
 
-        /* Calendar */
-        .calendar { display: flex; flex-wrap: wrap; gap: 8px; }
-        .cal-day {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            background: #e9ecef;
-            position: relative;
-        }
-        .cal-day.active { background: var(--primary); color: white; }
-        .cal-day.active-orange { background: var(--accent); color: white; }
-        .cal-day.both { background: linear-gradient(135deg, var(--primary) 50%, var(--accent) 50%); color: white; }
-        .cal-day .num { font-size: 1.1rem; }
-        .cal-day .label { font-size: 0.6rem; margin-top: 2px; }
+/* ===== Day cards ===== */
+.day-card{border-left:6px solid var(--primary)}
+.day-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.day-label{font-size:1.3rem;font-weight:800;color:var(--primary)}
+.day-date{color:var(--muted);font-weight:600}
+.day-theme{font-size:1rem;font-weight:700;margin:2px 0 14px}
+.tl{list-style:none}
+.tl li{display:flex;gap:12px;align-items:flex-start;padding:9px 10px;border-radius:10px;transition:background .15s;position:relative;flex-wrap:wrap}
+.tl li:hover{background:#f2f8fb}
+.tl .time{flex:0 0 64px;background:var(--primary-light);color:var(--primary-dark);font-weight:800;font-size:.8rem;text-align:center;padding:5px 6px;border-radius:8px}
+.tl .body{flex:1;min-width:200px}
+.tl .t-title{font-weight:700;font-size:.98rem}
+.tl .t-note{color:var(--muted);font-size:.84rem;margin-top:2px}
+.tl li.done .t-title{text-decoration:line-through;color:var(--muted)}
+.tl .del{position:absolute;top:6px;right:6px}
+.addrow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.addrow input,.addrow select{padding:9px 12px;border:2px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;transition:border-color .15s}
+.addrow input:focus{outline:none;border-color:var(--primary)}
+.addrow .w-time{width:74px}
+.addrow .w-title{flex:2;min-width:160px}
+.addrow .w-note{flex:3;min-width:150px}
 
-        /* Checklist */
-        .checklist { list-style: none; }
-        .checklist li {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-radius: 8px;
-        }
-        .checklist li:hover { background: #f8f9fa; }
-        .checklist li.checked { opacity: 0.6; }
-        .checklist li.checked .item-text { text-decoration: line-through; color: var(--text-muted); }
-        .checklist input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-        .checklist .category {
-            font-size: 0.75rem;
-            background: var(--primary-light);
-            color: var(--primary);
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .add-item {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-        .add-item input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.2s;
-        }
-        .add-item input:focus { outline: none; border-color: var(--primary); }
-        .add-item button {
-            padding: 10px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        .add-item button:hover { background: #023e8a; }
+/* ===== Check lists ===== */
+.clist{list-style:none}
+.clist li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #eef3f6;border-radius:8px;transition:background .15s}
+.clist li:hover{background:#f4f9fb}
+.clist li:last-child{border-bottom:none}
+.clist input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary);cursor:pointer;flex:0 0 auto}
+.clist li.done .txt{text-decoration:line-through;color:var(--muted)}
+.clist .txt{flex:1;font-size:.95rem;min-width:0}
+.clist .txt:hover{background:#fff8e6;box-shadow:0 0 0 2px #ffd166;border-radius:5px}
+.clist .due{flex:0 0 auto;background:#ffe3d3;color:#a04a10;font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:10px}
+.clist .del{flex:0 0 auto}
+.del{background:none;border:none;color:#c3ccd1;font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1}
+.del:hover{background:#fdecec;color:var(--danger)}
 
-        /* AI Education */
-        .edu-item {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .edu-item h4 { margin-bottom: 8px; color: var(--primary); }
-        .edu-item p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
-        .edu-item code {
-            background: #e9ecef;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        .edu-item .step {
-            display: flex;
-            gap: 8px;
-            margin: 6px 0;
-            font-size: 0.9rem;
-        }
-        .edu-item .step-num {
-            background: var(--primary);
-            color: white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
+/* progress */
+.pbar{height:7px;background:#e6eef3;border-radius:4px;overflow:hidden;margin:6px 0 14px}
+.pbar>div{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:4px;transition:width .4s}
+.pct{font-size:.78rem;color:var(--muted);font-weight:700;margin-top:10px}
 
-        /* Progress */
-        .progress-bar {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--success));
-            border-radius: 4px;
-            transition: width 0.3s;
-        }
+/* packing category */
+.pack-cat h3{font-size:1.05rem;margin-bottom:6px;display:flex;gap:8px;align-items:center}
+.pack-cat.p-3 h3, .pack-cat.p-3 .pbar>div{color:var(--pink)} .pack-cat.p-3 .pbar>div{background:linear-gradient(90deg,#e6398f,#f4a261)}
+.pack-cat.p-2 h3{color:var(--primary)}
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+/* ===== Kids ===== */
+.kid{border-radius:16px;padding:20px;border:2px solid #e3edf2;box-shadow:0 4px 16px rgba(20,60,90,.08)}
+.kid.minjun{background:linear-gradient(150deg,#eaf4fb,#f7fbfe)}
+.kid.minji{background:linear-gradient(150deg,#fdeef6,#fef8fc)}
+.kid-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.kid-emoji{font-size:2.6rem}
+.kid-head h3{font-size:1.3rem}
+.kid-head .age{color:var(--muted);font-size:.85rem;font-weight:600}
+.kid h4{font-size:.92rem;margin:16px 0 8px;display:flex;gap:6px;align-items:center}
+.kid.minji .clist input[type=checkbox]{accent-color:var(--pink)}
+.kid.minji .pbar>div{background:linear-gradient(90deg,var(--pink),var(--accent))}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
-            .header h1 { font-size: 1.8rem; }
-            .cal-day { width: 40px; height: 40px; }
-        }
+/* ===== Memo ===== */
+.memo-card{background:#fbfdfe;border:2px solid #e6eef3;border-radius:12px;padding:16px}
+.memo-card h4{color:var(--primary-dark);margin-bottom:8px;font-size:1rem}
+.memo-card .content{color:var(--text);font-size:.92rem;white-space:pre-wrap}
 
-        /* Print */
-        @media print {
-            body { background: white; }
-            .add-item, .no-print { display: none; }
-        }
-    </style>
+/* editable */
+[contenteditable=true]{outline:none;cursor:text}
+[contenteditable=true]:focus{box-shadow:0 0 0 2px var(--primary-light);border-radius:5px;background:#fff}
+
+/* ===== Modal ===== */
+.modal-wrap{position:fixed;inset:0;background:rgba(10,30,45,.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal{background:#fff;border-radius:16px;max-width:560px;width:100%;padding:26px;max-height:88vh;overflow:auto}
+.modal h3{margin-bottom:16px;font-size:1.2rem}
+.modal label{font-weight:700;font-size:.9rem;display:block;margin:16px 0 6px}
+.modal input[type=text],.modal input[type=password]{width:100%;padding:11px 13px;border:2px solid var(--border);border-radius:8px;font-size:.95rem;font-family:inherit}
+.modal input:focus{outline:none;border-color:var(--primary)}
+.modal .guide{background:#f0f7fb;border-radius:10px;padding:14px;font-size:.83rem;color:#31505f;margin-top:10px;line-height:1.7}
+.modal .guide a{color:var(--primary);font-weight:700}
+.modal-btns{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.token-state{margin-top:8px;font-size:.85rem;font-weight:700}
+.token-state.ok{color:var(--success)} .token-state.no{color:var(--danger)}
+.hidden{display:none!important}
+
+/* toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--primary-dark);color:#fff;padding:13px 22px;border-radius:12px;font-weight:700;font-size:.9rem;opacity:0;transition:all .3s;z-index:300;max-width:92vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+footer{padding:26px;text-align:center;color:var(--muted);font-size:.82rem;line-height:1.8}
+footer a{color:var(--primary);font-weight:700}
+
+@media(max-width:700px){
+  .header h1{font-size:1.5rem}
+  .grid-2{grid-template-columns:1fr}
+  .tl .time{flex:0 0 58px}
+  .card{padding:16px}
+}
+@media print{
+  .syncbar,.tabs,.addrow,.del,footer,#toast,.modal-wrap{display:none!important}
+  section{display:block!important;page-break-inside:avoid}
+  body{background:#fff;padding-bottom:0}
+  .card{box-shadow:none;border:1px solid #ccc}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🌊 제주도 여행 대시보드</h1>
-            <p class="subtitle">리브애니웨어 요양 + 가족여행</p>
-            <div class="date-badge">📅 2026년 11월 10일 ~ 11월 29일</div>
-        </div>
 
-        <!-- People Overview -->
-        <div class="card">
-            <h2><span class="icon">👥</span> 인원별 일정</h2>
-            <div class="grid-2">
-                <div class="person-card">
-                    <h3>💙 환석 & 하얀</h3>
-                    <div class="info">
-                        <span>📅 11월 10일 ~ 11월 29일 (20일)</span>
-                        <span>📍 제주도 리브애니웨어 (요양)</span>
-                        <span>🎯 목적: 요양 & 휴식</span>
-                        <span>📚 환석: AI 교육 예정</span>
-                    </div>
-                </div>
-                <div class="person-card orange">
-                    <h3>🧡 병훈 & 혜영</h3>
-                    <div class="info">
-                        <span>📅 11월 26일 ~ 11월 29일 (4일)</span>
-                        <span>📍 제주도 합류</span>
-                        <span>🎯 목적: 가족여행</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- 동기화 바 -->
+<div class="syncbar">
+  <div class="sync-info">
+    <span class="dot" id="syncDot"></span>
+    <span id="syncText">연결 중...</span>
+  </div>
+  <div class="sync-btns">
+    <button class="btn btn-save" id="btnSave" disabled>💾 GitHub에 저장</button>
+    <button class="btn btn-ghost" id="btnLoad" title="원격의 최신 내용으로 되돌립니다">↺ 최신 불러오기</button>
+    <button class="btn btn-ghost" id="btnSettings">⚙️ 설정</button>
+    <button class="btn btn-ghost" id="btnPrint">🖨️ 인쇄</button>
+  </div>
+</div>
 
-        <!-- Calendar -->
-        <div class="card">
-            <h2><span class="icon">📅</span> 11월 일정표</h2>
-            <div class="calendar" id="calendar"></div>
-            <div style="margin-top:15px; display:flex; gap:20px; font-size:0.85rem; color:var(--text-muted);">
-                <span><span style="display:inline-block;width:12px;height:12px;background:var(--primary);border-radius:3px;margin-right:5px;"></span>환석&하얀</span>
-                <span><span style="display:inline-block;width:12px;height:12px;background:var(--accent);border-radius:3px;margin-right:5px;"></span>병훈&혜영</span>
-                <span><span style="display:inline-block;width:12px;height:12px;background:linear-gradient(135deg,var(--primary) 50%,var(--accent) 50%);border-radius:3px;margin-right:5px;"></span>공통</span>
-            </div>
-        </div>
+<div class="container">
+  <div class="header" id="header">
+    <h1>🌊 제주도 가족여행</h1>
+    <p class="subtitle">👨‍👩‍👧‍👦 민준 & 민지가 함께하는 3박 4일 제주도 여행</p>
+    <div class="badges" id="headerBadges"></div>
+    <div class="family-chips" id="familyChips"></div>
+  </div>
 
-        <!-- AI Education Prep -->
-        <div class="card">
-            <h2><span class="icon">🤖</span> 환석 AI 교육 준비물</h2>
-            
-            <div class="edu-item">
-                <h4>📝 VS Code 설치</h4>
-                <div class="step"><span class="step-num">1</span><span><strong>다운로드:</strong> <code>https://code.visualstudio.com/</code> 접속</span></div>
-                <div class="step"><span class="step-num">2</span><span><strong>설치:</strong> Windows 64-bit 다운로드 후 설치 (Next만 누르면 됨)</span></div>
-                <div class="step"><span class="step-num">3</span><span><strong>한국어 설정:</strong> <code>Ctrl+Shift+P</code> → "Configure Display Language" → 한국어 선택</span></div>
-                <div class="step"><span class="step-num">4</span><span><strong>필수 확장:</strong> Python, Korean Language Pack 설치</span></div>
-            </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="schedule">📅 일정</button>
+    <button class="tab" data-tab="packing">🎒 준비물</button>
+    <button class="tab" data-tab="kids">👦👧 아이 플랜</button>
+    <button class="tab" data-tab="todo">✅ 여행 전 할 일</button>
+    <button class="tab" data-tab="memo">📝 메모</button>
+  </nav>
 
-            <div class="edu-item">
-                <h4>🐍 Python 설치</h4>
-                <div class="step"><span class="step-num">1</span><span><strong>다운로드:</strong> <code>https://www.python.org/downloads/</code> 접속</span></div>
-                <div class="step"><span class="step-num">2</span><span><strong>설치:</strong> "Add Python to PATH" 체크 후 Install Now</span></div>
-                <div class="step"><span class="step-num">3</span><span><strong>확인:</strong> 터미널에서 <code>python --version</code> 입력</span></div>
-                <div class="step"><span class="step-num">4</span><span><strong>VS Code 연동:</strong> VS Code에서 Python 파일 생성하면 자동 인식</span></div>
-            </div>
-
-            <div class="edu-item">
-                <h4>⚡ OpenCode 설치</h4>
-                <div class="step"><span class="step-num">1</span><span><strong>Node.js 설치:</strong> <code>https://nodejs.org/</code> 접속 → LTS 버전 설치</span></div>
-                <div class="step"><span class="step-num">2</span><span><strong>OpenCode 설치:</strong> 터미널에서 <code>npm install -g opencode-ai</code></span></div>
-                <div class="step"><span class="step-num">3</span><span><strong>실행:</strong> 프로젝트 폴더에서 <code>opencode</code> 입력</span></div>
-                <div class="step"><span class="step-num">4</span><span><strong>AI 연결:</strong> <code>/connect</code> → API 키 입력 (또는 무료 모델 사용)</span></div>
-            </div>
-        </div>
-
-        <!-- Checklist -->
-        <div class="card">
-            <h2><span class="icon">✅</span> 여행 체크리스트</h2>
-            <p style="color:var(--text-muted); margin-bottom:15px; font-size:0.9rem;">항목을 클릭하면 체크됩니다. 새 항목은 아래에서 추가하세요. (브라우저에 자동 저장됨)</p>
-            <ul class="checklist" id="checklist"></ul>
-            <div class="add-item no-print">
-                <input type="text" id="newItem" placeholder="새 항목 입력..." onkeypress="if(event.key==='Enter')addItem()">
-                <button onclick="addItem()">추가</button>
-            </div>
-        </div>
-
-        <!-- Quick Links -->
-        <div class="card">
-            <h2><span class="icon">🔗</span> 유용한 링크</h2>
-            <div class="grid-3">
-                <a href="https://code.visualstudio.com/" target="_blank" style="text-decoration:none;color:inherit;">
-                    <div class="edu-item" style="text-align:center;">
-                        <h4>📝 VS Code</h4>
-                        <p>code.visualstudio.com</p>
-                    </div>
-                </a>
-                <a href="https://www.python.org/downloads/" target="_blank" style="text-decoration:none;color:inherit;">
-                    <div class="edu-item" style="text-align:center;">
-                        <h4>🐍 Python</h4>
-                        <p>python.org</p>
-                    </div>
-                </a>
-                <a href="https://opencode.ai/" target="_blank" style="text-decoration:none;color:inherit;">
-                    <div class="edu-item" style="text-align:center;">
-                        <h4>⚡ OpenCode</h4>
-                        <p>opencode.ai</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="footer">
-            🌊 제주도 여행 대시보드 | 직접 편집 가능 | 2026년 11월
-        </div>
+  <section id="sec-schedule" class="active">
+    <div class="card">
+      <h2><span class="icon">📅</span> 11/26 (목) ~ 11/29 (일) · 3박 4일</h2>
+      <p class="hint">시간·일정을 클릭하면 바로 수정할 수 있어요. 항목 체크 → 완료 표시 ✅</p>
+      <div id="daysWrap"></div>
     </div>
+  </section>
 
-    <script>
-        // Calendar
-        const calendarEl = document.getElementById('calendar');
-        for (let day = 1; day <= 30; day++) {
-            const div = document.createElement('div');
-            let cls = 'cal-day';
-            if (day >= 10 && day <= 29) cls += ' active';
-            if (day >= 26 && day <= 29) cls += ' both';
-            div.className = cls;
-            div.innerHTML = `<span class="num">${day}</span><span class="label">11/${day}</span>`;
-            calendarEl.appendChild(div);
-        }
+  <section id="sec-packing">
+    <div class="card">
+      <h2><span class="icon">🎒</span> 준비물 리스트</h2>
+      <p class="hint">체크박스를 눌러 챙긴 것을 표시하세요. 항목 클릭 = 수정, － 버튼 = 삭제</p>
+      <div class="grid-2" id="packingWrap"></div>
+    </div>
+  </section>
 
-        // Checklist
-        const defaultItems = [
-            { text: "신분증 지참", category: "준비물" },
-            { text: "항공권 예약 확인", category: "예약" },
-            { text: "숙소 예약 확인 (리브애니웨어)", category: "예약" },
-            { text: "제주도 렌터카 예약", category: "교통" },
-            { text: "여행 보험 가입", category: "준비물" },
-            { text: "VS Code 설치 (환석 노트북)", category: "AI교육" },
-            { text: "Python 설치 (환석 노트북)", category: "AI교육" },
-            { text: "OpenCode 설치 (환석 노트북)", category: "AI교육" },
-            { text: "보조배터리 챙기기", category: "준비물" },
-            { text: "우비/방수 준비 (11월 제주 날씨)", category: "준비물" },
-            { text: "제주 관광지 정문 확인", category: "계획" },
-            { text: "맛집 리스트 정리", category: "계획" },
-            { text: "환석 AI 교육 자료 준비", category: "AI교육" },
-            { text: "하얀 요양 프로그램 일정 확인", category: "예약" },
-        ];
+  <section id="sec-kids">
+    <div class="card">
+      <h2><span class="icon">👦👧</span> 아이 플랜 — 민준(11살) & 민지(8살)</h2>
+      <p class="hint">가고 싶은 곳, 여행 미션, 맡은 역할 — 아이랑 함께 직접 추가/체크해요!</p>
+      <div class="grid-2" id="kidsWrap"></div>
+    </div>
+  </section>
 
-        function loadChecklist() {
-            const saved = localStorage.getItem('jejudo-checklist');
-            if (saved) {
-                return JSON.parse(saved);
-            }
-            return defaultItems.map((item, i) => ({ id: i, ...item, checked: false }));
-        }
+  <section id="sec-todo">
+    <div class="card">
+      <h2><span class="icon">✅</span> 여행 전 할 일</h2>
+      <p class="hint">기한 안내의 날짜까지 완료하는 게 목표! (마감 표시 📅)</p>
+      <div id="todoWrap"></div>
+    </div>
+  </section>
 
-        function saveChecklist(items) {
-            localStorage.setItem('jejudo-checklist', JSON.stringify(items));
-        }
+  <section id="sec-memo">
+    <div class="card">
+      <h2><span class="icon">📝</span> 메모 & 정보</h2>
+      <p class="hint">숙소·렌터카 정보를 예약 후 여기에 적어두면 모두가 볼 수 있어요. 클릭해서 수정 ✏️</p>
+      <div class="grid-auto" id="memoWrap"></div>
+      <div class="addrow"><button class="btn btn-ghost" onclick="addMemo()">＋ 메모 추가</button></div>
+    </div>
+  </section>
 
-        let items = loadChecklist();
+  <footer>
+    💾 <b>GitHub에 저장</b>을 누르면 가족 모두의 화면에 자동으로 동기화돼요 (약 30초 내).<br>
+    토큰 없이는 <a id="editLink" target="_blank" rel="noopener">GitHub에서 data.json 직접 편집</a>으로도 함께 업데이트할 수 있어요.<br>
+    🌊 제주도 가족여행 대시보드 · 2026. 11. 26 ~ 11. 29
+  </footer>
+</div>
 
-        function renderChecklist() {
-            const ul = document.getElementById('checklist');
-            ul.innerHTML = '';
-            items.forEach((item, idx) => {
-                const li = document.createElement('li');
-                if (item.checked) li.classList.add('checked');
-                li.innerHTML = `
-                    <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleItem(${idx})">
-                    <span class="category">${item.category}</span>
-                    <span class="item-text">${item.text}</span>
-                `;
-                li.onclick = (e) => {
-                    if (e.target.type !== 'checkbox') toggleItem(idx);
-                };
-                ul.appendChild(li);
-            });
-            saveChecklist(items);
-            updateProgress();
-        }
+<!-- 설정 모달 -->
+<div class="modal-wrap hidden" id="modal">
+  <div class="modal">
+    <h3>⚙️ 설정</h3>
+    <label>👤 내 이름 (누가 저장했는지 표시돼요)</label>
+    <input type="text" id="inpName" placeholder="예: 혜영, 병훈, 민준">
+    <label>🔑 GitHub 토큰 ( Personal Access Token )</label>
+    <input type="password" id="inpToken" placeholder="ghp_... 또는 github_pat_...">
+    <div class="token-state" id="tokenState"></div>
+    <div class="guide">
+      대시보드에서 바로 <b>저장(커밋)</b>하려면 토큰이 필요해요 (무료, 2분):<br>
+      1. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained 토큰 만들기</a> 접속<br>
+      2. Repository access → <b>Only select repositories</b> → <b>bugoo12/jejudo</b> 선택<br>
+      3. Permissions → Contents → <b>Read and write</b> 선택<br>
+      4. Generate 후 나온 코드를 복사해서 위에 붙여넣기<br>
+      ※ 토큰은 이 브라우저에만 저장되고, 이 저장소의 data.json 수정 권한만 사용합니다.
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-save" id="btnSaveSettings">저장</button>
+      <button class="btn btn-ghost" id="btnTestToken">토큰 확인</button>
+      <button class="btn btn-danger" id="btnClearToken">토큰 삭제</button>
+      <button class="btn btn-ghost" id="btnCloseModal">닫기</button>
+    </div>
+  </div>
+</div>
 
-        function toggleItem(idx) {
-            items[idx].checked = !items[idx].checked;
-            renderChecklist();
-        }
+<div id="toast"></div>
 
-        function addItem() {
-            const input = document.getElementById('newItem');
-            const text = input.value.trim();
-            if (text) {
-                items.push({ id: Date.now(), text, category: "기타", checked: false });
-                input.value = '';
-                renderChecklist();
-            }
-        }
+<script>
+'use strict';
+/* ============ 설정 ============ */
+var CONFIG={owner:'bugoo12',repo:'jejudo',branch:'main',file:'data.json'};
+var RAW_URL='https://raw.githubusercontent.com/'+CONFIG.owner+'/'+CONFIG.repo+'/'+CONFIG.branch+'/'+CONFIG.file;
+var API_URL='https://api.github.com/repos/'+CONFIG.owner+'/'+CONFIG.repo+'/contents/'+CONFIG.file;
+document.getElementById('editLink').href='https://github.com/'+CONFIG.owner+'/'+CONFIG.repo+'/edit/'+CONFIG.branch+'/'+CONFIG.file;
+var POLL_SEC=30;
 
-        function updateProgress() {
-            const total = items.length;
-            const checked = items.filter(i => i.checked).length;
-            const pct = total > 0 ? Math.round(checked / total * 100) : 0;
-            let bar = document.querySelector('.progress-bar');
-            if (!bar) {
-                bar = document.createElement('div');
-                bar.className = 'progress-bar';
-                bar.innerHTML = `<div class="progress-fill" style="width:${pct}%"></div>`;
-                document.getElementById('checklist').parentNode.insertBefore(bar, document.getElementById('checklist'));
-            }
-            bar.querySelector('.progress-fill').style.width = pct + '%';
-        }
+/* ============ 상태 ============ */
+var data=null, dirty=false, lastSync=null, remoteNewer=false, saveBusy=false;
+var TOKEN=localStorage.getItem('jejudo-pat')||'';
+var MYNAME=localStorage.getItem('jejudo-name')||'';
 
-        renderChecklist();
-    </script>
+/* ============ 기본 데이터 (오프라인 폴백용 초기 스냅숏 — 실제 원본은 저장소 data.json) ============ */
+var DEFAULT_DATA={"meta":{"title":"제주도 가족여행","startDate":"2026-11-26","endDate":"2026-11-29","updatedAt":"2000-01-01T00:00:00Z","updatedBy":"초기"},"family":[{"name":"병훈","role":"아빠","emoji":"👨","color":"#0077b6"},{"name":"혜영","role":"엄마","emoji":"👩","color":"#0096c7"},{"name":"민준","role":"아들 · 11살","emoji":"👦","color":"#0077b6"},{"name":"민지","role":"딸 · 8살","emoji":"👧","color":"#e6398f"}]};
+
+/* ============ 유틸 ============ */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show');},3200);}
+function ago(d){var s=Math.floor((Date.now()-d)/1000);if(s<10)return'방금 전';if(s<60)return s+'초 전';var m=Math.floor(s/60);if(m<60)return m+'분 전';var h=Math.floor(m/60);if(h<24)return h+'시간 전';return Math.floor(h/24)+'일 전';}
+function b64(str){var b=new TextEncoder().encode(str),r='',CH=0x8000;for(var i=0;i<b.length;i+=CH){r+=String.fromCharCode.apply(null,b.subarray(i,i+CH));}return btoa(r);}
+function fmtWhen(iso){try{var d=new Date(iso);return (d.getMonth()+1)+'/'+d.getDate()+' '+(d.getHours()<12?'오전':'오후')+' '+((d.getHours()%12)||12)+':'+('0'+d.getMinutes()).slice(-2);}catch(e){return'';}}
+
+/* ============ 상태 변경 ============ */
+function markDirty(){
+  dirty=true;remoteNewer=false;
+  localStorage.setItem('jejudo-draft',JSON.stringify(data));
+  updateSyncUI();
+}
+function clearDirty(){
+  dirty=false;remoteNewer=false;
+  localStorage.removeItem('jejudo-draft');
+  updateSyncUI();
+}
+
+/* ============ 동기화 UI ============ */
+function updateSyncUI(){
+  var dot=document.getElementById('syncDot'),txt=document.getElementById('syncText'),btn=document.getElementById('btnSave');
+  btn.disabled=dirty?false:true;
+  if(dirty){
+    dot.className='dot dirty';
+    txt.innerHTML='⚠️ <b>저장 안 된 변경</b>이 있어요 — 💾 GitHub에 저장을 눌러주세요';
+    if(remoteNewer)txt.innerHTML+=' · 🔔 상대방이 업데이트한 내용도 있음(↺하면 내 변경은 사라짐)';
+  }else if(lastSync){
+    dot.className='dot';
+    var who=data&&data.meta&&data.meta.updatedBy?esc(data.meta.updatedBy):'';
+    txt.innerHTML='✅ 동기화됨 ('+ago(lastSync)+') · 마지막 업데이트: <b>'+who+'</b> '+(data&&data.meta&&data.meta.updatedAt?fmtWhen(data.meta.updatedAt):'');
+  }else{
+    dot.className='dot off';
+    txt.textContent='📴 오프라인 — 연결되면 자동 동기화돼요';
+  }
+}
+
+/* ============ 원격 데이터 가져오기 ============ */
+function fetchRemote(){
+  return fetch(RAW_URL+'?t='+Date.now(),{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw 0;return r.json();
+  });
+}
+function applyRemote(j,force){
+  if(j&&j.meta&&j.meta.updatedAt===(data&&data.meta?data.meta.updatedAt:null)&&!force){
+    lastSync=new Date();updateSyncUI();return;
+  }
+  if(dirty&&!force){
+    remoteNewer=true;lastSync=new Date();updateSyncUI();
+    toast('🔔 다른 가족이 업데이트했어요! ↺ 최신 불러오기로 볼 수 있어요');
+    return;
+  }
+  data=j;lastSync=new Date();clearDirty();renderAll();
+}
+function poll(){
+  fetchRemote().then(function(j){applyRemote(j,false);})
+   .catch(function(){lastSync=null;updateSyncUI();});
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)poll();});
+setInterval(poll,POLL_SEC*1000);
+
+/* ============ GitHub 저장 (토큰 필요) ============ */
+function saveToGithub(){
+  if(!data.days||!data.packing||!data.kidsPlan||!data.todo||!data.memo){poll();toast('⚠️ 아직 전체 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요');return;}
+  if(!TOKEN){openModal();toast('먼저 ⚙️ 설정에서 GitHub 토큰을 입력해주세요');return;}
+  if(saveBusy)return;saveBusy=true;
+  var btn=document.getElementById('btnSave');btn.textContent='⏳ 저장 중...';btn.disabled=true;
+  data.meta.updatedAt=new Date().toISOString();
+  data.meta.updatedBy=MYNAME||'가족';
+  var payload=JSON.stringify(data,null,2);
+  function getSha(){
+    return fetch(API_URL+'?t='+Date.now(),{headers:{'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json'}}).then(function(r){
+      if(r.status===404)return null;
+      if(!r.ok)throw new Error('sha 조회 실패 ('+r.status+')');
+      return r.json().then(function(j){return j.sha;});
+    });
+  }
+  function put(sha,tries){
+    return fetch(API_URL,{method:'PUT',
+      headers:{'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:'대시보드 업데이트 ('+(MYNAME||'가족')+')',content:b64(payload),sha:sha||undefined})
+    }).then(function(r){
+      if(r.status===409&&tries>0){return getSha().then(function(s){return put(s,tries-1);});}
+      if(!r.ok)return r.text().then(function(t){throw new Error('저장 실패 ('+r.status+') '+t.slice(0,120));});
+      return true;
+    });
+  }
+  getSha().then(function(sha){return put(sha,2);}).then(function(){
+    clearDirty();lastSync=new Date();renderAll();
+    toast('✅ 저장 완료! 가족 화면에 곧 자동으로 보여요 (최대 30초)');
+  }).catch(function(e){
+    toast('❌ '+e.message+' — 토큰/권한을 확인해주세요');
+    updateSyncUI();
+  }).finally(function(){
+    saveBusy=false;btn.textContent='💾 GitHub에 저장';btn.disabled=!dirty;
+  });
+}
+
+/* ============ 렌더링 ============ */
+function renderAll(){renderHeader();renderDays();renderPacking();renderKids();renderTodo();renderMemo();updateSyncUI();}
+
+function renderHeader(){
+  var m=data.meta;
+  var dday=Math.ceil((new Date(m.startDate+'T00:00:00')-new Date())/86400000);
+  var dtxt=dday>0?('D-'+dday):(dday===0?'D-Day 🎉':'여행 중 🌊');
+  document.getElementById('headerBadges').innerHTML=
+    '<span class="badge">📅 2026. 11. 26 (목) ~ 11. 29 (일)</span>'+
+    '<span class="badge">🏡 3박 4일</span>'+
+    '<span class="badge dday">'+txt+'</span>';
+  var chips='';
+  (data.family||[]).forEach(function(f){
+    chips+='<span class="fchip" style="color:'+esc(f.color)+'">'+esc(f.emoji)+' '+esc(f.name)+' <small style="color:#6b7a83;font-weight:600">'+esc(f.role)+'</small></span>';
+  });
+  document.getElementById('familyChips').innerHTML=chips;
+  document.title=m.title+' 대시보드 🌊';
+}
+
+/* --- 일정 --- */
+function renderDays(){
+  var w=document.getElementById('daysWrap');w.innerHTML='';
+  (data.days||[]).forEach(function(day,di){
+    var done=day.items.filter(function(i){return i.checked;}).length;
+    var pct=day.items.length?Math.round(done/day.items.length*100):0;
+    var card=document.createElement('div');card.className='card day-card';
+    card.style.margin='0 0 14px';
+    card.innerHTML=
+      '<div class="day-head"><span class="day-label">'+esc(day.label)+'</span>'+
+      '<span class="day-date">📅 '+(day.date?esc(day.date.slice(5).replace('-','/')):'')+' ('+esc(day.weekday)+')</span></div>'+
+      '<div class="day-theme">'+esc(day.theme)+'</div>'+
+      '<div class="pbar"><div style="width:'+pct+'%"></div></div>'+
+      '<div class="pct">완료 '+done+' / '+day.items.length+' ('+pct+'%)</div>'+
+      '<ul class="tl"></ul>'+
+      '<div class="addrow">'+
+        '<input class="w-time" id="t-time-'+di+'" placeholder="시간" value="오후">'+
+        '<input class="w-title" id="t-title-'+di+'" placeholder="일정 제목 (예: 카페 투어)">'+
+        '<input class="w-note" id="t-note-'+di+'" placeholder="메모 (선택)">'+
+        '<button class="btn btn-ghost btn-sm" onclick="addDayItem('+di+')">＋ 추가</button>'+
+      '</div>';
+    var ul=card.querySelector('.tl');
+    day.items.forEach(function(item,ii){
+      var li=document.createElement('li');if(item.checked)li.className='done';
+      li.innerHTML=
+        '<span class="time" contenteditable="true" data-path="days.'+di+'.items.'+ii+'.time">'+esc(item.time)+'</span>'+
+        '<span class="body">'+
+          '<div class="t-title" contenteditable="true" data-path="days.'+di+'.items.'+ii+'.title">'+esc(item.title)+'</div>'+
+          (item.note?'<div class="t-note" contenteditable="true" data-path="days.'+di+'.items.'+ii+'.note">'+esc(item.note)+'</div>':'')+
+        '</span>'+
+        '<input type="checkbox" '+(item.checked?'checked':'')+' onchange="setPath(\'days.'+di+'.items.'+ii+'.checked\',this.checked)">'+
+        '<button class="del" title="삭제" onclick="delItem(\'days.'+di+'.items\','+ii+')">✕</button>';
+      ul.appendChild(li);
+    });
+    w.appendChild(card);
+  });
+}
+function addDayItem(di){
+  var time=document.getElementById('t-time-'+di).value.trim()||'오후';
+  var title=document.getElementById('t-title-'+di).value.trim();
+  var note=document.getElementById('t-note-'+di).value.trim();
+  if(!title){toast('일정 제목을 입력해주세요');return;}
+  data.days[di].items.push({time:time,title:title,note:note,checked:false});
+  markDirty();renderDays();
+}
+
+/* --- 공통 체크리스트 렌더 --- */
+function renderCList(ul,items,basePath,opts){
+  opts=opts||{};
+  ul.innerHTML='';
+  items.forEach(function(item,i){
+    var li=document.createElement('li');if(item.checked)li.className='done';
+    li.innerHTML=
+      '<input type="checkbox" '+(item.checked?'checked':'')+' onchange="setPath(\''+basePath+'.'+i+'.checked\',this.checked)">'+
+      '<span class="txt" contenteditable="true" data-path="'+basePath+'.'+i+'.text">'+esc(item.text)+'</span>'+
+      (item.due?'<span class="due">📅 '+esc(item.due)+'</span>':'')+
+      '<button class="del" title="삭제" onclick="delItem(\''+basePath+'\','+i+')">✕</button>';
+    ul.appendChild(li);
+  });
+  var add=document.createElement('div');add.className='addrow';
+  add.innerHTML='<input style="flex:1;min-width:150px" id="add-'+basePath+'" placeholder="'+(opts.ph||'새 항목 입력 후 Enter')+'" onkeypress="if(event.key===\'Enter\')addToList(\''+basePath+'\',\''+(opts.due||'')+'\')">'+
+    '<button class="btn btn-ghost btn-sm" onclick="addToList(\''+basePath+'\',\''+(opts.due||'')+'\')">＋ 추가</button>';
+  ul.parentNode.insertBefore(add,ul.nextSibling);
+}
+function addToList(basePath,dueHint){
+  var inp=document.getElementById('add-'+basePath);
+  var v=inp.value.trim();if(!v){toast('내용을 입력해주세요');return;}
+  var arr=getPath(basePath);
+  arr.push({text:v,checked:false,due:dueHint?undefined:undefined});
+  markDirty();renderAll();
+  var ni=document.getElementById('add-'+basePath);if(ni)ni.focus();
+}
+function getPath(p){
+  return p.split('.').reduce(function(o,k){return o[parseInt(k,10)===k*1?+k:k];},data);
+}
+function setPath(p,v){
+  var keys=p.split('.'),last=keys.pop(),obj=data;
+  keys.forEach(function(k){obj=obj[+k===k*1?+k:k];});
+  obj[last]=v;markDirty();
+  if(p.indexOf('.checked')>-1){renderAll();}
+}
+function delItem(basePath,i){
+  if(!confirm('이 항목을 삭제할까요?'))return;
+  var arr=getPath(basePath);arr.splice(i,1);markDirty();renderAll();
+}
+
+/* --- 준비물 --- */
+function renderPacking(){
+  var w=document.getElementById('packingWrap');w.innerHTML='';
+  (data.packing||[]).forEach(function(cat,ci){
+    var done=cat.items.filter(function(i){return i.checked;}).length;
+    var pct=cat.items.length?Math.round(done/cat.items.length*100):0;
+    var div=document.createElement('div');div.className='pack-cat p-'+ci;
+    div.innerHTML=
+      '<h3>'+esc(cat.icon)+' '+esc(cat.category)+'</h3>'+
+      '<div class="pbar"><div style="width:'+pct+'%"></div></div>'+
+      '<div class="pct">'+done+' / '+cat.items.length+' 챙김 ('+pct+'%)</div>'+
+      '<ul class="clist"></ul>';
+    w.appendChild(div);
+    renderCList(div.querySelector('.clist'),cat.items,'packing.'+ci+'.items',{ph:'챙길 것 추가'});
+  });
+}
+
+/* --- 아이 플랜 --- */
+function renderKids(){
+  var w=document.getElementById('kidsWrap');w.innerHTML='';
+  (data.kidsPlan||[]).forEach(function(kid,ki){
+    var cls=kid.name==='민지'?'minji':'minjun';
+    var total=0,done=0;
+    ['wish','mission','duty'].forEach(function(s){(kid[s]||[]).forEach(function(i){total++;if(i.checked)done++;});});
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='kid '+cls;
+    div.innerHTML=
+      '<div class="kid-head"><span class="kid-emoji">'+esc(kid.emoji)+'</span>'+
+      '<div><h3 style="color:'+esc(kid.color)+'">'+esc(kid.name)+''+ "'"+'s PLAN</h3><span class="age">'+kid.age+'살</span></div></div>'+
+      '<div class="pbar"><div style="width:'+pct+'%"></div></div>'+
+      '<div class="pct">'+done+' / '+total+' 완료 ('+pct+'%)</div>'+
+      '<h4>💖 가고 싶은 곳</h4><ul class="clist"></ul>'+
+      '<h4>🎯 여행 미션</h4><ul class="clist"></ul>'+
+      '<h4>🌟 담당 역할</h4><ul class="clist"></ul>';
+    w.appendChild(div);
+    renderCList(div.querySelectorAll('.clist')[0],kid.wish,'kidsPlan.'+ki+'.wish',{ph:'가고 싶은 곳 추가'});
+    renderCList(div.querySelectorAll('.clist')[1],kid.mission,'kidsPlan.'+ki+'.mission',{ph:'미션 추가'});
+    renderCList(div.querySelectorAll('.clist')[2],kid.duty,'kidsPlan.'+ki+'.duty',{ph:'역할 추가'});
+  });
+}
+
+/* --- 할 일 --- */
+function renderTodo(){
+  var w=document.getElementById('todoWrap');
+  var todo=data.todo||[];
+  var done=todo.filter(function(i){return i.checked;}).length;
+  var pct=todo.length?Math.round(done/todo.length*100):0;
+  var box=document.createElement('div');box.className='card';box.style.padding='0';
+  box.innerHTML=
+    '<div style="padding:16px 20px 0">'+
+    '<div class="pbar"><div style="width:'+pct+'%"></div></div>'+
+    '<div class="pct">완료 '+done+' / '+todo.length+' ('+pct+'%)</div></div>'+
+    '<ul class="clist" style="padding:10px 12px"></ul>';
+  w.innerHTML='';w.appendChild(box);
+  renderCList(box.querySelector('.clist'),todo,'todo',{ph:'할 일 추가'});
+}
+
+/* --- 메모 --- */
+function renderMemo(){
+  var w=document.getElementById('memoWrap');w.innerHTML='';
+  (data.memo||[]).forEach(function(m,mi){
+    var d=document.createElement('div');d.className='memo-card';
+    d.innerHTML=
+      '<h4 contenteditable="true" data-path="memo.'+mi+'.title">📝 '+esc(m.title)+'</h4>'+
+      '<div class="content" contenteditable="true" data-path="memo.'+mi+'.content">'+esc(m.content)+'</div>'+
+      '<button class="del" style="margin-top:10px" onclick="delMemo('+mi+')">✕ 삭제</button>';
+    w.appendChild(d);
+  });
+}
+function addMemo(){data.memo.push({title:'새 메모',content:'내용을 입력하세요'});markDirty();renderMemo();}
+function delMemo(i){if(!confirm('이 메모를 삭제할까요?'))return;data.memo.splice(i,1);markDirty();renderMemo();}
+
+/* ============ contenteditable 공용 처리 ============ */
+document.addEventListener('focusin',function(e){
+  var t=e.target;
+  if(t.getAttribute&&t.getAttribute('contenteditable')==='true'){t._orig=t.textContent;}
+});
+document.addEventListener('blur',function(e){
+  var t=e.target;
+  if(t.getAttribute&&t.getAttribute('contenteditable')==='true'&&t._orig!==undefined){
+    var v=t.textContent.trim();
+    if(v!==t._orig){setPath(t.getAttribute('data-path'),v);toast('수정됨 — 💾 저장해주세요');}
+    else if(v===''){t.textContent=t._orig;}
+  }
+},true);
+
+/* ============ 탭 ============ */
+document.getElementById('tabs').addEventListener('click',function(e){
+  var btn=e.target.closest('.tab');if(!btn)return;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t===btn);});
+  document.querySelectorAll('section').forEach(function(s){s.classList.toggle('active',s.id==='sec-'+btn.dataset.tab);});
+});
+
+/* ============ 모달 / 설정 ============ */
+function openModal(){
+  document.getElementById('inpName').value=MYNAME;
+  document.getElementById('inpToken').value=TOKEN;
+  document.getElementById('tokenState').textContent=TOKEN?'토큰 저장됨 ✅':'토큰 없음 — 저장은 GitHub 웹편집으로도 가능해요';
+  document.getElementById('modal').classList.remove('hidden');
+}
+document.getElementById('btnSettings').onclick=openModal;
+document.getElementById('btnCloseModal').onclick=function(){document.getElementById('modal').classList.add('hidden');};
+document.getElementById('btnSaveSettings').onclick=function(){
+  MYNAME=document.getElementById('inpName').value.trim();
+  localStorage.setItem('jejudo-name',MYNAME);
+  var t=document.getElementById('inpToken').value.trim();
+  if(t!==TOKEN){TOKEN=t;localStorage.setItem('jejudo-pat',TOKEN);}
+  document.getElementById('modal').classList.add('hidden');
+  toast('설정 저장됨 ✅');
+  updateSyncUI();
+};
+document.getElementById('btnClearToken').onclick=function(){
+  TOKEN='';localStorage.removeItem('jejudo-pat');
+  document.getElementById('inpToken').value='';
+  document.getElementById('tokenState').textContent='토큰 삭제됨';
+};
+document.getElementById('btnTestToken').onclick=function(){
+  var t=document.getElementById('inpToken').value.trim();
+  var st=document.getElementById('tokenState');
+  if(!t){st.textContent='토큰을 입력해주세요';st.className='token-state no';return;}
+  st.textContent='확인 중...';st.className='token-state';
+  fetch(API_URL,{headers:{'Authorization':'Bearer '+t,'Accept':'application/vnd.github+json'}}).then(function(r){
+    if(r.ok){st.textContent='✅ 토큰 사용 가능! (data.json 접근됨)';st.className='token-state ok';}
+    else if(r.status===404){st.textContent='✅ 토큰 OK — 아직 data.json이 없습니다 (저장 시 생성됨)';st.className='token-state ok';}
+    else if(r.status===401){st.textContent='❌ 토큰이 유효하지 않아요 (401)';st.className='token-state no';}
+    else if(r.status===403){st.textContent='❌ 권한 부족 — Contents: Read and write 권한 필요 (403)';st.className='token-state no';}
+    else{st.textContent='❌ 확인 실패 ('+r.status+')';st.className='token-state no';}
+  }).catch(function(){st.textContent='❌ 네트워크 오류';st.className='token-state no';});
+};
+
+/* ============ 버튼 ============ */
+document.getElementById('btnSave').onclick=saveToGithub;
+document.getElementById('btnLoad').onclick=function(){
+  if(dirty&&!confirm('저장 안 된 변경이 있어요!\n최신 원격 내용을 불러오면 내 변경사항은 사라집니다. 계속할까요?'))return;
+  fetchRemote().then(function(j){applyRemote(j,true);toast('최신 내용을 불러왔어요 ✅');})
+    .catch(function(){toast('불러오기 실패 — 네트워크 확인 후 다시 시도');});
+};
+document.getElementById('btnPrint').onclick=function(){window.print();};
+
+/* ============ 시작 ============ */
+(function init(){
+  var draft=localStorage.getItem('jejudo-draft');
+  if(draft){try{data=JSON.parse(draft);dirty=true;}catch(e){data=null;}}
+  if(!data)data=DEFAULT_DATA;
+  renderAll();
+  poll();
+})();
+</script>
 </body>
 </html>

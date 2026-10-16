@@ -1,0 +1,202 @@
+{
+  "meta": {
+    "title": "제주도 가족여행",
+    "startDate": "2026-11-26",
+    "endDate": "2026-11-29",
+    "updatedAt": "2026-10-16T09:00:00+09:00",
+    "updatedBy": "가족"
+  },
+  "family": [
+    { "name": "병훈", "role": "아빠", "emoji": "👨", "color": "#0077b6" },
+    { "name": "혜영", "role": "엄마", "emoji": "👩", "color": "#0096c7" },
+    { "name": "민준", "role": "아들 · 11살", "emoji": "👦", "color": "#0077b6" },
+    { "name": "민지", "role": "딸 · 8살", "emoji": "👧", "color": "#e6398f" }
+  ],
+  "days": [
+    {
+      "date": "2026-11-26",
+      "label": "Day 1",
+      "weekday": "목",
+      "theme": "✈️ 제주 도착 & 제주시 산책",
+      "items": [
+        { "time": "10:00", "title": "제주공항 도착", "note": "여권/신분증 · 공항에서 감귤주스 🍊" },
+        { "time": "11:00", "title": "렌터카 인수", "note": "공항 렌터카 센터 · 예약번호/운전면허증" },
+        { "time": "12:30", "title": "점심 — 제주시 맛집", "note": "고기국수 or 흑돼지" },
+        { "time": "14:00", "title": "숙소 체크인 & 짐 정리", "note": "제주시 기준" },
+        { "time": "15:30", "title": "이호테우 해변", "note": "말 등상 · 낚시 구경 · 인증샷 📸" },
+        { "time": "17:00", "title": "도두봉 반담길 & 노을", "note": "가볍게 30분 산책" },
+        { "time": "19:00", "title": "저녁 — 제주시", "note": "노형동/연동 맛집 골라보기" }
+      ]
+    },
+    {
+      "date": "2026-11-27",
+      "weekday": "금",
+      "label": "Day 2",
+      "theme": "🌋 동부 코스 — 성산일출봉 & 아쿠아플라넷",
+      "items": [
+        { "time": "08:00", "title": "조식 & 출발", "note": "제주시 → 성산 약 1시간" },
+        { "time": "09:30", "title": "성산일출봉 등반", "note": "왕복 1시간 · 👦👧 미션: 정상 인증샷!" },
+        { "time": "11:30", "title": "섭지코지 산책", "note": "등대 · 해안 풍경" },
+        { "time": "12:30", "title": "점심 — 성산 읍내", "note": "해산물/회" },
+        { "time": "14:00", "title": "아쿠아플라넷 제주", "note": "대형 수족관 · 사전 예약 할인 🦈" },
+        { "time": "17:30", "title": "우도 (선택)", "note": "배 15분 · 봉수당 · 땅콩아이스크림 · 시간 되면" },
+        { "time": "19:30", "title": "저녁 & 숙소 복귀", "note": "성산→제주시" }
+      ]
+    },
+    {
+      "date": "2026-11-28",
+      "weekday": "토",
+      "label": "Day 3",
+      "theme": "🚂 서부 코스 — 에코랜드 & 오설록",
+      "items": [
+        { "time": "09:00", "title": "출발 — 조천 에코랜드", "note": "제주시에서 약 30분" },
+        { "time": "09:30", "title": "에코랜드 테마파크", "note": "숲 기차 🚂 · 정원 산책 · 👦👧 최애" },
+        { "time": "12:00", "title": "점심 — 애월 바다뷰 카페", "note": "해안도로 따라 이동" },
+        { "time": "14:00", "title": "오설록 티뮤지엄 & 티가든", "note": "녹차 스콘 · 아이스크림 🧡 민지" },
+        { "time": "16:00", "title": "협재 해변 & 해안 산책", "note": "에메랄드빛 바다 · 사진" },
+        { "time": "17:30", "title": "낙조 카페 — 애월 해안도로", "note": "노을 감상 🌅" },
+        { "time": "19:00", "title": "저녁 & 숙소 복귀", "note": "오징어 회 · 빙떡" }
+      ]
+    },
+    {
+      "date": "2026-11-29",
+      "weekday": "일",
+      "label": "Day 4",
+      "theme": "🛍️ 마지막 날 — 쇼핑 & 출국",
+      "items": [
+        { "time": "09:00", "title": "유리의성 or 도두봉 산책", "note": "날씨/시간에 따라 선택" },
+        { "time": "10:30", "title": "기념품 쇼핑", "note": "신라면세점 · 감귤 · 돌하르방" },
+        { "time": "12:00", "title": "마지막 점심", "note": "고기국수 / 흑돼지" },
+        { "time": "13:30", "title": "렌터카 반납", "note": "기름 가득 · 시간 여유 있게 ⛽" },
+        { "time": "15:00", "title": "제주공항 수속 & 출국", "note": "감귤 소포 부치기 📦 · 즐거운 여행 됐어요!" }
+      ]
+    }
+  ],
+  "packing": [
+    {
+      "category": "가족 공통",
+      "icon": "🧳",
+      "items": [
+        { "text": "신분증/여권 (전원)", "checked": false },
+        { "text": "항공권 e티켓 (앱 캡처)", "checked": false },
+        { "text": "숙소·렌터카 예약번호", "checked": false },
+        { "text": "보조배터리", "checked": false },
+        { "text": "C타입 충전기 & 케이블 (공용)", "checked": false },
+        { "text": "접이식 우산 2개", "checked": false },
+        { "text": "우비/방수 점퍼", "checked": false },
+        { "text": "상비약 (해열제·소화제·밴드·파스)", "checked": false },
+        { "text": "마스크", "checked": false },
+        { "text": "선크림 (11월에도 자외선 주의)", "checked": false },
+        { "text": "물티슈 & 손소독제", "checked": false },
+        { "text": "공용 간식 & 물", "checked": false },
+        { "text": "현금 + 체크카드", "checked": false }
+      ]
+    },
+    {
+      "category": "아빠·엄마",
+      "icon": "👨‍👩",
+      "items": [
+        { "text": "운전면허증 (렌터카)", "checked": false },
+        { "text": "개인 화장품/면도기", "checked": false },
+        { "text": "스마트폰 충전기", "checked": false },
+        { "text": "비행기용 담요/목베개", "checked": false }
+      ]
+    },
+    {
+      "category": "민준 (11살)",
+      "icon": "👦",
+      "items": [
+        { "text": "닌텐도 스위치 + 충전기", "checked": false },
+        { "text": "이어폰", "checked": false },
+        { "text": "좋아하는 책/만화책", "checked": false },
+        { "text": "축구공 or 야구배트+공", "checked": false },
+        { "text": "운동화 + 후드집업 + 모자", "checked": false },
+        { "text": "개인 물통", "checked": false },
+        { "text": "개인 간식 (칩/젤리)", "checked": false },
+        { "text": "필통 + 결석 미리과제", "checked": false }
+      ]
+    },
+    {
+      "category": "민지 (8살)",
+      "icon": "👧",
+      "items": [
+        { "text": "좋아하는 인형 1~2개", "checked": false },
+        { "text": "색칠책 + 크레파스", "checked": false },
+        { "text": "미니 보드게임/카드놀이", "checked": false },
+        { "text": "원피스 + 예쁜 신발 (사진용)", "checked": false },
+        { "text": "머리끈 + 빗", "checked": false },
+        { "text": "운동화 + 패딩조끼", "checked": false },
+        { "text": "개인 물통", "checked": false },
+        { "text": "개인 간식 (초콜릿/과자)", "checked": false }
+      ]
+    }
+  ],
+  "kidsPlan": [
+    {
+      "name": "민준",
+      "age": 11,
+      "emoji": "👦",
+      "color": "#0077b6",
+      "wish": [
+        { "text": "아쿠아플라넷 — 상어 제대로 보기 🦈", "checked": false },
+        { "text": "에코랜드 숲 기차 타기 🚂", "checked": false },
+        { "text": "성산일출봉 정상 등반", "checked": false },
+        { "text": "우도에서 자전거/전동카트", "checked": false }
+      ],
+      "mission": [
+        { "text": "성산일출봉 정상 인증샷 찍기 📸", "checked": false },
+        { "text": "신기한 돌 1개 주워서 이름 붙이기", "checked": false },
+        { "text": "하루 3줄 여행 일기 쓰기", "checked": false },
+        { "text": "돌하르방 사진 3개 찾기", "checked": false }
+      ],
+      "duty": [
+        { "text": "가족 짐 운반 도우미 💪", "checked": false },
+        { "text": "가족 사진 찍기 담당 📷", "checked": false },
+        { "text": "민지 지켜주기 형 역할", "checked": false }
+      ]
+    },
+    {
+      "name": "민지",
+      "age": 8,
+      "emoji": "👧",
+      "color": "#e6398f",
+      "wish": [
+        { "text": "아쿠아플라넷 — 인어공주랑 물고기 🐠", "checked": false },
+        { "text": "오설록 아이스크림 먹기 🍦", "checked": false },
+        { "text": "바다뷰 카페에서 사진 찍기", "checked": false },
+        { "text": "유리의성 구경하기 ✨", "checked": false }
+      ],
+      "mission": [
+        { "text": "바다 노을 색칠해서 그리기 🎨", "checked": false },
+        { "text": "파도 소리 녹음하기 🎧", "checked": false },
+        { "text": "맛있는 간식 리포트 쓰기", "checked": false },
+        { "text": "등대·돌하르방 사진 찍기", "checked": false }
+      ],
+      "duty": [
+        { "text": "아침 기상 알람 담당 ⏰", "checked": false },
+        { "text": "가족 물 챙기기 담당 💧", "checked": false },
+        { "text": "분위기 메이커 😆", "checked": false }
+      ]
+    }
+  ],
+  "todo": [
+    { "text": "왕복 항공권 예약/확인 (11/26 출발 · 11/29 귀가)", "checked": false, "due": "10/31" },
+    { "text": "숙소 예약 (제주시·세화·성산 중 선택)", "checked": false, "due": "10/31" },
+    { "text": "렌터카 예약 (5인승 SUV · 보험 포함)", "checked": false, "due": "10/31" },
+    { "text": "아쿠아플라넷 온라인 예약 (할인)", "checked": false, "due": "11/20" },
+    { "text": "에코랜드 예약", "checked": false, "due": "11/20" },
+    { "text": "우도 배편 확인 (성산종합여객)", "checked": false, "due": "11/20" },
+    { "text": "여행자보험 가입 (4인)", "checked": false, "due": "11/25" },
+    { "text": "민준·민지 학교 결석계/미리과제 확인 (11/26~27 평일)", "checked": false, "due": "11/20" },
+    { "text": "날씨 확인 & 옷 최종 점검 (12~17도 · 바람 많음)", "checked": false, "due": "11/25" },
+    { "text": "맛집 리스트 정리", "checked": false, "due": "11/25" },
+    { "text": "휴대폰 사진 용량 확보 (4인)", "checked": false, "due": "11/25" }
+  ],
+  "memo": [
+    { "title": "숙소", "content": "예약 후 주소 · 체크인 시간 · 전화번호 기입" },
+    { "title": "렌터카", "content": "회사 · 차량번호 · 반납 시간 기입" },
+    { "title": "날씨", "content": "11월 제주 12~17도, 바람 많고 비 잦음 — 겹쳐 입는 옷 준비" },
+    { "title": "체험 팁", "content": "아쿠아플라넷·에코랜드는 사전 온라인 예약 시 할인" },
+    { "title": "비상 연락", "content": "112 / 119 · 인근 대형병원: 제주대학교병원 (제주시)" }
+  ]
+}
