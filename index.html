@@ -390,7 +390,7 @@ function renderHeader(){
   document.getElementById('headerBadges').innerHTML=
     '<span class="badge">📅 2026. 11. 26 (목) ~ 11. 29 (일)</span>'+
     '<span class="badge">🏡 3박 4일</span>'+
-    '<span class="badge dday">'+txt+'</span>';
+    '<span class="badge dday">'+dtxt+'</span>';
   var chips='';
   (data.family||[]).forEach(function(f){
     chips+='<span class="fchip" style="color:'+esc(f.color)+'">'+esc(f.emoji)+' '+esc(f.name)+' <small style="color:#6b7a83;font-weight:600">'+esc(f.role)+'</small></span>';
