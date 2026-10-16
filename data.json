@@ -12,6 +12,10 @@
     { "name": "민준", "role": "아들 · 11살", "emoji": "👦", "color": "#0077b6" },
     { "name": "민지", "role": "딸 · 8살", "emoji": "👧", "color": "#e6398f" }
   ],
+  "gallery": [
+    { "title": "제주도 갈 수 있어! 액션 포스터", "caption": "", "src": "https://raw.githubusercontent.com/bugoo12/jejudo/main/images/action-poster.png" },
+    { "title": "제주도 알록달록 여행 일정표", "caption": "", "src": "https://raw.githubusercontent.com/bugoo12/jejudo/main/images/schedule-poster.png" }
+  ],
   "days": [
     {
       "date": "2026-11-26",

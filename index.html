@@ -113,6 +113,21 @@ section.active{display:block}
 .kid.minji .clist input[type=checkbox]{accent-color:var(--pink)}
 .kid.minji .pbar>div{background:linear-gradient(90deg,var(--pink),var(--accent))}
 
+/* ===== Gallery ===== */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.gslot{position:relative;background:#fbfdfe;border:2px solid #e2ecf1;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.gslot .gimg img{width:100%;height:230px;object-fit:cover;display:block}
+.gempty{height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:repeating-linear-gradient(45deg,#f6fafc 0 12px,#eef5f9 12px 24px);border:2px dashed #bcd4de;border-radius:12px;margin:10px;cursor:pointer;color:#5a7a89;transition:border-color .15s;text-align:center}
+.gempty:hover{border-color:var(--primary);color:var(--primary-dark)}
+.gempty .cam{font-size:2.2rem}
+.gempty .gtxt{font-size:.85rem;font-weight:700;line-height:1.5}
+.gempty small{font-weight:600;color:#8aa7b3}
+.gtitle{font-weight:800;font-size:1rem;margin:10px 12px 2px}
+.gcap{color:var(--muted);font-size:.85rem;margin:0 12px 4px}
+.gbtns{display:flex;gap:6px;padding:2px 12px 12px;flex-wrap:wrap}
+.gdel{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);padding:5px 9px;font-weight:800}
+.ph:empty::before{content:attr(data-ph);color:#a9c0ca;font-weight:500}
+
 /* ===== Memo ===== */
 .memo-card{background:#fbfdfe;border:2px solid #e6eef3;border-radius:12px;padding:16px}
 .memo-card h4{color:var(--primary-dark);margin-bottom:8px;font-size:1rem}
@@ -150,7 +165,7 @@ footer a{color:var(--primary);font-weight:700}
   .card{padding:16px}
 }
 @media print{
-  .syncbar,.tabs,.addrow,.del,footer,#toast,.modal-wrap{display:none!important}
+  .syncbar,.tabs,.addrow,.gbtns,.gdel,footer,#toast,.modal-wrap{display:none!important}
   section{display:block!important;page-break-inside:avoid}
   body{background:#fff;padding-bottom:0}
   .card{box-shadow:none;border:1px solid #ccc}
@@ -179,6 +194,14 @@ footer a{color:var(--primary);font-weight:700}
     <p class="subtitle">👨‍👩‍👧‍👦 민준 & 민지가 함께하는 3박 4일 제주도 여행</p>
     <div class="badges" id="headerBadges"></div>
     <div class="family-chips" id="familyChips"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="icon">📸</span> 우리 여행 사진 — 마음껏 꾸며주세요</h2>
+    <p class="hint">빈 칸에 가족 사진을 넣어 대시보드를 꾸며요! 📷 칸 클릭 = 사진 올리기(토큰 필요) · 🔗 URL로도 가능 · 제목·설명 클릭해서 수정 → 💾 GitHub에 저장</p>
+    <div class="gallery-grid" id="galleryWrap"></div>
+    <div class="addrow"><button class="btn btn-ghost" onclick="addGallery()">＋ 사진 칸 추가</button></div>
+    <input type="file" id="gfile" accept="image/*" style="display:none">
   </div>
 
   <nav class="tabs" id="tabs">
@@ -344,6 +367,26 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)poll
 setInterval(poll,POLL_SEC*1000);
 
 /* ============ GitHub 저장 (토큰 필요) ============ */
+function authHeaders(){return{'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json','Content-Type':'application/json'};}
+function apiPutFile(path,contentB64,message){
+  function getSha(){
+    return fetch('https://api.github.com/repos/'+CONFIG.owner+'/'+CONFIG.repo+'/contents/'+path+'?t='+Date.now(),{headers:authHeaders()}).then(function(r){
+      if(r.status===404)return null;
+      if(!r.ok)throw new Error('파일 조회 실패 ('+r.status+')');
+      return r.json().then(function(j){return j.sha;});
+    });
+  }
+  function put(sha,tries){
+    var body={message:message,content:contentB64};
+    if(sha)body.sha=sha;
+    return fetch('https://api.github.com/repos/'+CONFIG.owner+'/'+CONFIG.repo+'/contents/'+path,{method:'PUT',headers:authHeaders(),body:JSON.stringify(body)}).then(function(r){
+      if(r.status===409&&tries>0){return getSha().then(function(s){return put(s,tries-1);});}
+      if(!r.ok)return r.text().then(function(t){throw new Error('저장 실패 ('+r.status+') '+t.slice(0,120));});
+      return true;
+    });
+  }
+  return getSha().then(function(sha){return put(sha,2);});
+}
 function saveToGithub(){
   if(!data.days||!data.packing||!data.kidsPlan||!data.todo||!data.memo){poll();toast('⚠️ 아직 전체 데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요');return;}
   if(!TOKEN){openModal();toast('먼저 ⚙️ 설정에서 GitHub 토큰을 입력해주세요');return;}
@@ -352,24 +395,7 @@ function saveToGithub(){
   data.meta.updatedAt=new Date().toISOString();
   data.meta.updatedBy=MYNAME||'가족';
   var payload=JSON.stringify(data,null,2);
-  function getSha(){
-    return fetch(API_URL+'?t='+Date.now(),{headers:{'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json'}}).then(function(r){
-      if(r.status===404)return null;
-      if(!r.ok)throw new Error('sha 조회 실패 ('+r.status+')');
-      return r.json().then(function(j){return j.sha;});
-    });
-  }
-  function put(sha,tries){
-    return fetch(API_URL,{method:'PUT',
-      headers:{'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
-      body:JSON.stringify({message:'대시보드 업데이트 ('+(MYNAME||'가족')+')',content:b64(payload),sha:sha||undefined})
-    }).then(function(r){
-      if(r.status===409&&tries>0){return getSha().then(function(s){return put(s,tries-1);});}
-      if(!r.ok)return r.text().then(function(t){throw new Error('저장 실패 ('+r.status+') '+t.slice(0,120));});
-      return true;
-    });
-  }
-  getSha().then(function(sha){return put(sha,2);}).then(function(){
+  apiPutFile(CONFIG.file,b64(payload),'대시보드 업데이트 ('+(MYNAME||'가족')+')').then(function(){
     clearDirty();lastSync=new Date();renderAll();
     toast('✅ 저장 완료! 가족 화면에 곧 자동으로 보여요 (최대 30초)');
   }).catch(function(e){
@@ -381,7 +407,7 @@ function saveToGithub(){
 }
 
 /* ============ 렌더링 ============ */
-function renderAll(){renderHeader();renderDays();renderPacking();renderKids();renderTodo();renderMemo();updateSyncUI();}
+function renderAll(){renderHeader();renderGallery();renderDays();renderPacking();renderKids();renderTodo();renderMemo();updateSyncUI();}
 
 function renderHeader(){
   var m=data.meta;
@@ -557,6 +583,74 @@ function renderMemo(){
 function addMemo(){data.memo.push({title:'새 메모',content:'내용을 입력하세요'});markDirty();renderMemo();}
 function delMemo(i){if(!confirm('이 메모를 삭제할까요?'))return;data.memo.splice(i,1);markDirty();renderMemo();}
 
+/* ============ 사진 갤러리 ============ */
+function renderGallery(){
+  var w=document.getElementById('galleryWrap');w.innerHTML='';
+  (data.gallery||[]).forEach(function(g,gi){
+    var slot=document.createElement('div');slot.className='gslot';
+    var imgHtml=g.src
+      ?'<div class="gimg"><img src="'+esc(g.src)+'" alt="여행 사진"></div>'
+      :'<div class="gempty" onclick="pickFile('+gi+')"><span class="cam">📷</span><span class="gtxt">여기를 눌러 사진 넣기<br><small>또는 아래 🔗 URL 버튼</small></span></div>';
+    slot.innerHTML=imgHtml+
+      '<div class="gtitle ph" contenteditable="true" data-path="gallery.'+gi+'.title" data-ph="제목 입력 (예: 우리 가족 ✨)">'+esc(g.title)+'</div>'+
+      '<div class="gcap ph" contenteditable="true" data-path="gallery.'+gi+'.caption" data-ph="한 줄 설명 입력">'+esc(g.caption)+'</div>'+
+      '<div class="gbtns">'+
+        '<button class="btn btn-ghost btn-sm" onclick="pickFile('+gi+')">📤 사진 올리기</button>'+
+        '<button class="btn btn-ghost btn-sm" onclick="setGalleryUrl('+gi+')">🔗 URL 넣기</button>'+
+        (g.src?'<button class="btn btn-ghost btn-sm" onclick="clearGalleryImg('+gi+')">✕ 사진 빼기</button>':'')+
+      '</div>'+
+      '<button class="del gdel" title="칸 삭제" onclick="delGallery('+gi+')">✕</button>';
+    w.appendChild(slot);
+  });
+}
+function addGallery(){(data.gallery=data.gallery||[]).push({title:'',caption:'',src:''});markDirty();renderGallery();}
+function delGallery(i){if(!confirm('이 사진 칸을 삭제할까요? (올린 사진 파일은 저장소에 남아요)'))return;data.gallery.splice(i,1);markDirty();renderGallery();}
+function setGalleryUrl(i){
+  var u=window.prompt('이미지 주소(URL)를 입력해주세요','https://');
+  if(u===null)return;
+  u=u.trim();
+  if(u.indexOf('http')!==0){toast('http(s)로 시작하는 주소를 넣어주세요');return;}
+  data.gallery[i].src=u;markDirty();renderGallery();
+  toast('사진을 넣었어요! 💾 GitHub에 저장을 눌러주세요');
+}
+function clearGalleryImg(i){if(!confirm('사진을 뺄까요? (칸은 그대로 남아요)'))return;data.gallery[i].src='';markDirty();renderGallery();}
+function pickFile(i){
+  if(!TOKEN){openModal();toast('사진 올리기도 GitHub 토큰이 필요해요 — ⚙️ 설정 먼저!');return;}
+  window._gslot=i;document.getElementById('gfile').click();
+}
+function resizeImage(file,cb){
+  var img=new Image();
+  img.onload=function(){
+    var MAX=1400,w=img.width,h=img.height,s=Math.min(1,MAX/Math.max(w,h));
+    var c=document.createElement('canvas');
+    c.width=Math.round(w*s);c.height=Math.round(h*s);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    URL.revokeObjectURL(img.src);
+    cb(c.toDataURL('image/jpeg',0.82).split(',')[1]);
+  };
+  img.onerror=function(){toast('이미지를 읽을 수 없어요');};
+  img.src=URL.createObjectURL(file);
+}
+document.getElementById('gfile').addEventListener('change',function(){
+  var f=this.files&&this.files[0];this.value='';
+  onGalleryFile(f);
+});
+function onGalleryFile(file){
+  var i=window._gslot;
+  if(!file||String(file.type).indexOf('image')!==0){toast('이미지 파일을 골라주세요');return;}
+  if(!data.gallery||data.gallery[i]==null){return;}
+  toast('⏳ 사진 처리 중...');
+  resizeImage(file,function(content){
+    var name='images/gallery-'+Date.now()+'.jpg';
+    apiPutFile(name,content,'사진 추가 ('+(MYNAME||'가족')+')').then(function(){
+      data.gallery[i].src='https://raw.githubusercontent.com/'+CONFIG.owner+'/'+CONFIG.repo+'/'+CONFIG.branch+'/'+name;
+      markDirty();
+      toast('✅ 사진 올라감! 일정 함께 저장 중...');
+      saveToGithub();
+    }).catch(function(e){toast('❌ 사진 업로드 실패: '+e.message);});
+  });
+}
+
 /* ============ contenteditable 공용 처리 ============ */
 document.addEventListener('focusin',function(e){
   var t=e.target;
@@ -566,7 +660,7 @@ document.addEventListener('blur',function(e){
   var t=e.target;
   if(t.getAttribute&&t.getAttribute('contenteditable')==='true'&&t._orig!==undefined){
     var v=t.textContent.trim();
-    if(v!==t._orig){setPath(t.getAttribute('data-path'),v);toast('수정됨 — 💾 저장해주세요');}
+    if(v!==t._orig){setPath(t.getAttribute('data-path'),v);if(v==='')t.textContent='';toast('수정됨 — 💾 저장해주세요');}
     else if(v===''){t.textContent=t._orig;}
   }
 },true);
