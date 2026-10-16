@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제주도 여행 대시보드 🌊</title>
+    <style>
+        :root {
+            --primary: #0077b6;
+            --primary-light: #90e0ef;
+            --accent: #f4a261;
+            --success: #2a9d8f;
+            --danger: #e63946;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #212529;
+            --text-muted: #6c757d;
+            --border: #dee2e6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #f3e5f5 100%);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary), #023e8a);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,119,182,0.3);
+        }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .header .subtitle { font-size: 1.1rem; opacity: 0.9; }
+        .header .date-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2 .icon { font-size: 1.6rem; }
+
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+        /* People Cards */
+        .person-card {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid var(--primary);
+        }
+        .person-card.orange { border-left-color: var(--accent); background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+        .person-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
+        .person-card .info { display: flex; flex-direction: column; gap: 4px; }
+        .person-card .info span { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* Calendar */
+        .calendar { display: flex; flex-wrap: wrap; gap: 8px; }
+        .cal-day {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #e9ecef;
+            position: relative;
+        }
+        .cal-day.active { background: var(--primary); color: white; }
+        .cal-day.active-orange { background: var(--accent); color: white; }
+        .cal-day.both { background: linear-gradient(135deg, var(--primary) 50%, var(--accent) 50%); color: white; }
+        .cal-day .num { font-size: 1.1rem; }
+        .cal-day .label { font-size: 0.6rem; margin-top: 2px; }
+
+        /* Checklist */
+        .checklist { list-style: none; }
+        .checklist li {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 8px;
+        }
+        .checklist li:hover { background: #f8f9fa; }
+        .checklist li.checked { opacity: 0.6; }
+        .checklist li.checked .item-text { text-decoration: line-through; color: var(--text-muted); }
+        .checklist input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        .checklist .category {
+            font-size: 0.75rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .add-item {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .add-item input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        .add-item input:focus { outline: none; border-color: var(--primary); }
+        .add-item button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .add-item button:hover { background: #023e8a; }
+
+        /* AI Education */
+        .edu-item {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .edu-item h4 { margin-bottom: 8px; color: var(--primary); }
+        .edu-item p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
+        .edu-item code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .edu-item .step {
+            display: flex;
+            gap: 8px;
+            margin: 6px 0;
+            font-size: 0.9rem;
+        }
+        .edu-item .step-num {
+            background: var(--primary);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Progress */
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.8rem; }
+            .cal-day { width: 40px; height: 40px; }
+        }
+
+        /* Print */
+        @media print {
+            body { background: white; }
+            .add-item, .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌊 제주도 여행 대시보드</h1>
+            <p class="subtitle">리브애니웨어 요양 + 가족여행</p>
+            <div class="date-badge">📅 2026년 11월 10일 ~ 11월 29일</div>
+        </div>
+
+        <!-- People Overview -->
+        <div class="card">
+            <h2><span class="icon">👥</span> 인원별 일정</h2>
+            <div class="grid-2">
+                <div class="person-card">
+                    <h3>💙 환석 & 하얀</h3>
+                    <div class="info">
+                        <span>📅 11월 10일 ~ 11월 29일 (20일)</span>
+                        <span>📍 제주도 리브애니웨어 (요양)</span>
+                        <span>🎯 목적: 요양 & 휴식</span>
+                        <span>📚 환석: AI 교육 예정</span>
+                    </div>
+                </div>
+                <div class="person-card orange">
+                    <h3>🧡 병훈 & 혜영</h3>
+                    <div class="info">
+                        <span>📅 11월 26일 ~ 11월 29일 (4일)</span>
+                        <span>📍 제주도 합류</span>
+                        <span>🎯 목적: 가족여행</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="card">
+            <h2><span class="icon">📅</span> 11월 일정표</h2>
+            <div class="calendar" id="calendar"></div>
+            <div style="margin-top:15px; display:flex; gap:20px; font-size:0.85rem; color:var(--text-muted);">
+                <span><span style="display:inline-block;width:12px;height:12px;background:var(--primary);border-radius:3px;margin-right:5px;"></span>환석&하얀</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:var(--accent);border-radius:3px;margin-right:5px;"></span>병훈&혜영</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:linear-gradient(135deg,var(--primary) 50%,var(--accent) 50%);border-radius:3px;margin-right:5px;"></span>공통</span>
+            </div>
+        </div>
+
+        <!-- AI Education Prep -->
+        <div class="card">
+            <h2><span class="icon">🤖</span> 환석 AI 교육 준비물</h2>
+            
+            <div class="edu-item">
+                <h4>📝 VS Code 설치</h4>
+                <div class="step"><span class="step-num">1</span><span><strong>다운로드:</strong> <code>https://code.visualstudio.com/</code> 접속</span></div>
+                <div class="step"><span class="step-num">2</span><span><strong>설치:</strong> Windows 64-bit 다운로드 후 설치 (Next만 누르면 됨)</span></div>
+                <div class="step"><span class="step-num">3</span><span><strong>한국어 설정:</strong> <code>Ctrl+Shift+P</code> → "Configure Display Language" → 한국어 선택</span></div>
+                <div class="step"><span class="step-num">4</span><span><strong>필수 확장:</strong> Python, Korean Language Pack 설치</span></div>
+            </div>
+
+            <div class="edu-item">
+                <h4>🐍 Python 설치</h4>
+                <div class="step"><span class="step-num">1</span><span><strong>다운로드:</strong> <code>https://www.python.org/downloads/</code> 접속</span></div>
+                <div class="step"><span class="step-num">2</span><span><strong>설치:</strong> "Add Python to PATH" 체크 후 Install Now</span></div>
+                <div class="step"><span class="step-num">3</span><span><strong>확인:</strong> 터미널에서 <code>python --version</code> 입력</span></div>
+                <div class="step"><span class="step-num">4</span><span><strong>VS Code 연동:</strong> VS Code에서 Python 파일 생성하면 자동 인식</span></div>
+            </div>
+
+            <div class="edu-item">
+                <h4>⚡ OpenCode 설치</h4>
+                <div class="step"><span class="step-num">1</span><span><strong>Node.js 설치:</strong> <code>https://nodejs.org/</code> 접속 → LTS 버전 설치</span></div>
+                <div class="step"><span class="step-num">2</span><span><strong>OpenCode 설치:</strong> 터미널에서 <code>npm install -g opencode-ai</code></span></div>
+                <div class="step"><span class="step-num">3</span><span><strong>실행:</strong> 프로젝트 폴더에서 <code>opencode</code> 입력</span></div>
+                <div class="step"><span class="step-num">4</span><span><strong>AI 연결:</strong> <code>/connect</code> → API 키 입력 (또는 무료 모델 사용)</span></div>
+            </div>
+        </div>
+
+        <!-- Checklist -->
+        <div class="card">
+            <h2><span class="icon">✅</span> 여행 체크리스트</h2>
+            <p style="color:var(--text-muted); margin-bottom:15px; font-size:0.9rem;">항목을 클릭하면 체크됩니다. 새 항목은 아래에서 추가하세요. (브라우저에 자동 저장됨)</p>
+            <ul class="checklist" id="checklist"></ul>
+            <div class="add-item no-print">
+                <input type="text" id="newItem" placeholder="새 항목 입력..." onkeypress="if(event.key==='Enter')addItem()">
+                <button onclick="addItem()">추가</button>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="card">
+            <h2><span class="icon">🔗</span> 유용한 링크</h2>
+            <div class="grid-3">
+                <a href="https://code.visualstudio.com/" target="_blank" style="text-decoration:none;color:inherit;">
+                    <div class="edu-item" style="text-align:center;">
+                        <h4>📝 VS Code</h4>
+                        <p>code.visualstudio.com</p>
+                    </div>
+                </a>
+                <a href="https://www.python.org/downloads/" target="_blank" style="text-decoration:none;color:inherit;">
+                    <div class="edu-item" style="text-align:center;">
+                        <h4>🐍 Python</h4>
+                        <p>python.org</p>
+                    </div>
+                </a>
+                <a href="https://opencode.ai/" target="_blank" style="text-decoration:none;color:inherit;">
+                    <div class="edu-item" style="text-align:center;">
+                        <h4>⚡ OpenCode</h4>
+                        <p>opencode.ai</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            🌊 제주도 여행 대시보드 | 직접 편집 가능 | 2026년 11월
+        </div>
+    </div>
+
+    <script>
+        // Calendar
+        const calendarEl = document.getElementById('calendar');
+        for (let day = 1; day <= 30; day++) {
+            const div = document.createElement('div');
+            let cls = 'cal-day';
+            if (day >= 10 && day <= 29) cls += ' active';
+            if (day >= 26 && day <= 29) cls += ' both';
+            div.className = cls;
+            div.innerHTML = `<span class="num">${day}</span><span class="label">11/${day}</span>`;
+            calendarEl.appendChild(div);
+        }
+
+        // Checklist
+        const defaultItems = [
+            { text: "신분증 지참", category: "준비물" },
+            { text: "항공권 예약 확인", category: "예약" },
+            { text: "숙소 예약 확인 (리브애니웨어)", category: "예약" },
+            { text: "제주도 렌터카 예약", category: "교통" },
+            { text: "여행 보험 가입", category: "준비물" },
+            { text: "VS Code 설치 (환석 노트북)", category: "AI교육" },
+            { text: "Python 설치 (환석 노트북)", category: "AI교육" },
+            { text: "OpenCode 설치 (환석 노트북)", category: "AI교육" },
+            { text: "보조배터리 챙기기", category: "준비물" },
+            { text: "우비/방수 준비 (11월 제주 날씨)", category: "준비물" },
+            { text: "제주 관광지 정문 확인", category: "계획" },
+            { text: "맛집 리스트 정리", category: "계획" },
+            { text: "환석 AI 교육 자료 준비", category: "AI교육" },
+            { text: "하얀 요양 프로그램 일정 확인", category: "예약" },
+        ];
+
+        function loadChecklist() {
+            const saved = localStorage.getItem('jejudo-checklist');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return defaultItems.map((item, i) => ({ id: i, ...item, checked: false }));
+        }
+
+        function saveChecklist(items) {
+            localStorage.setItem('jejudo-checklist', JSON.stringify(items));
+        }
+
+        let items = loadChecklist();
+
+        function renderChecklist() {
+            const ul = document.getElementById('checklist');
+            ul.innerHTML = '';
+            items.forEach((item, idx) => {
+                const li = document.createElement('li');
+                if (item.checked) li.classList.add('checked');
+                li.innerHTML = `
+                    <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleItem(${idx})">
+                    <span class="category">${item.category}</span>
+                    <span class="item-text">${item.text}</span>
+                `;
+                li.onclick = (e) => {
+                    if (e.target.type !== 'checkbox') toggleItem(idx);
+                };
+                ul.appendChild(li);
+            });
+            saveChecklist(items);
+            updateProgress();
+        }
+
+        function toggleItem(idx) {
+            items[idx].checked = !items[idx].checked;
+            renderChecklist();
+        }
+
+        function addItem() {
+            const input = document.getElementById('newItem');
+            const text = input.value.trim();
+            if (text) {
+                items.push({ id: Date.now(), text, category: "기타", checked: false });
+                input.value = '';
+                renderChecklist();
+            }
+        }
+
+        function updateProgress() {
+            const total = items.length;
+            const checked = items.filter(i => i.checked).length;
+            const pct = total > 0 ? Math.round(checked / total * 100) : 0;
+            let bar = document.querySelector('.progress-bar');
+            if (!bar) {
+                bar = document.createElement('div');
+                bar.className = 'progress-bar';
+                bar.innerHTML = `<div class="progress-fill" style="width:${pct}%"></div>`;
+                document.getElementById('checklist').parentNode.insertBefore(bar, document.getElementById('checklist'));
+            }
+            bar.querySelector('.progress-fill').style.width = pct + '%';
+        }
+
+        renderChecklist();
+    </script>
+</body>
+</html>
